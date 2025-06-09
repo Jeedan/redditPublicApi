@@ -11,7 +11,7 @@ import axios from "axios";
 // preview: images (array): id, resolution(array, 6 values):
 // score (upvote count?)
 // subreddit type (public)
-const getRedditJson = async (subreddit = "airplaneears") => {
+const getRedditJson = async (subreddit = "airplaneears", after = "") => {
 	try {
 		// move this out to a utils file, maybe CONSTANTS
 		// we use corsByPass because of getting throttled by reddit
