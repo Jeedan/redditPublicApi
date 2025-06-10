@@ -101,7 +101,7 @@ const ImageFetcher = () => {
 					{/* the image component */}
 					<div
 						key={currentImage.id}
-						className="w-full aspect-[4/3] mb-4"
+						className="w-full aspect-[4/3] mb-4 min-h-[700px]"
 					>
 						{/* show spinner when loading image */}
 						{imgLoading && <Spinner height="600px" />}
@@ -109,7 +109,7 @@ const ImageFetcher = () => {
 							src={`${currentImage.imageUrl}`}
 							alt={`${currentImage.title}`}
 							onLoad={onLoadHandler}
-							className={`w-full max-w-full h-auto min-h-[300px] sm:min-h-[400px] md:min-h-[500px] lg:min-h-[600px] max-h-[80vh] object-contain transition-all duration-300 ${
+							className={`w-full h-full object-contain transition-all duration-300 ${
 								imgLoading ? "blur-md" : ""
 							}`}
 						/>
