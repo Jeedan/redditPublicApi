@@ -109,8 +109,10 @@ const ImageFetcher = () => {
 							src={`${currentImage.imageUrl}`}
 							alt={`${currentImage.title}`}
 							onLoad={onLoadHandler}
-							className={`w-full h-full object-contain transition-all duration-300 ${
-								imgLoading ? "blur-md" : ""
+							className={`w-full h-full object-contain transition-all duration-300 ease-in-out ${
+								imgLoading
+									? "opacity-0 scale-95 blur-md"
+									: "opacity-100 scale-100 blur-0"
 							}`}
 						/>
 					</div>
