@@ -18,7 +18,9 @@ function App() {
 					/>
 				</a>
 			</div> */}
-			<h1>Fetch Reddit Images</h1>
+			<h1 className="m-4 text-center font-extrabold text-4xl  tracking-tight dark:text-white text-gray-900 md:text-5xl lg:text-6xl">
+				Fetch Reddit Images
+			</h1>
 			<div className="card">
 				<ImageFetcher />
 			</div>
