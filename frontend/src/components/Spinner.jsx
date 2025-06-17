@@ -1,9 +1,9 @@
 import React from "react";
 
-const Spinner = ({ height = "600px" }) => {
+const Spinner = () => {
 	return (
 		// show a spinner here
-		<div className={`flex items-center justify-center min-h-[${height}]`}>
+		<div>
 			<div role="status">
 				<svg
 					aria-hidden="true"

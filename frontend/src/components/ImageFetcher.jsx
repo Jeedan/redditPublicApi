@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import UseRedditFetcher from "../hooks/useRedditFetcher";
 import Spinner from "./Spinner";
-import Button from "../Button";
+import Button from "./Button";
 
 const ImageFetcher = () => {
 	//  id: post.data.id,
@@ -77,7 +77,9 @@ const ImageFetcher = () => {
 	return (
 		<>
 			{loading ? (
-				<Spinner height="600px" />
+				<div className="flex justify-center items-center min-h-[600px]">
+					<Spinner />
+				</div>
 			) : error ? (
 				// maybe render a try again button here to refetch
 				<div className="text-center p-4">
@@ -92,22 +94,23 @@ const ImageFetcher = () => {
 					</button>
 				</div>
 			) : currentImage ? (
-				<div
-					className="flex flex-col items-center max-w-3xl w-full mx-auto p-4 border border-black"
-					// style={{
-					// 	boxSizing: "border-box",
-					// }}
-				>
-					{/* the image component */}
-					<div
-						key={currentImage.id}
-						className="w-full aspect-[4/3] mb-4 min-h-[700px]"
-					>
-						{/* show spinner when loading image */}
-						{imgLoading && <Spinner height="600px" />}
+				<div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto min-h-[700px] p-4 border border-black">
+					{/* Image and Buttons Row */}
+					<div className="relative w-full max-w-3xl aspect-[4/3] flex items-center justify-center">
+						{/* Previous Button */}
+						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 md:static md:translate-y-0 md:top-auto md:left-auto">
+							<Button
+								onClick={prevImgHandler}
+								disabled={currentIndex === 0}
+							>
+								{"<"}
+							</Button>
+						</div>
+
+						{/* Image */}
 						<img
-							src={`${currentImage.imageUrl}`}
-							alt={`${currentImage.title}`}
+							src={currentImage.imageUrl}
+							alt={currentImage.title}
 							onLoad={onLoadHandler}
 							className={`w-full h-full object-contain transition-all duration-300 ease-in-out delay-75 ${
 								imgLoading
@@ -115,40 +118,42 @@ const ImageFetcher = () => {
 									: "opacity-100 scale-100 blur-0"
 							}`}
 						/>
-					</div>
 
-					<div className="flex flex-wrap items-center justify-center gap-4 mb-4 w-full max-w-2xl">
-						<Button
-							onClick={prevImgHandler}
-							disabled={currentIndex === 0}
-						>
-							Previous
-						</Button>
+						{/* Spinner overlay while loading */}
+						{imgLoading && (
+							<div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-80 z-10">
+								<Spinner />
+							</div>
+						)}
 
-						<div className="flex items-center justify-center flex-1 px-2 py-2 text-neutral-800 text-center text-lg whitespace-normal break-word">
-							<small>
-								Posted by:
-								<a
-									className="text-blue-900"
-									href={`${currentImage.permalink}`}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									{" "}
-									{currentImage.author}
-								</a>
-							</small>
+						{/* Next Button */}
+						<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20 md:static md:translate-y-0 md:top-auto md:right-auto">
+							<Button
+								onClick={nextImgHandler}
+								disabled={
+									!hasMoreImages &&
+									currentIndex === totalImages - 1
+								}
+								className="bg-white bg-opacity-80 sm:bg-opacity-100"
+							>
+								{">"}
+							</Button>
 						</div>
-						<Button
-							onClick={nextImgHandler}
-							disabled={
-								!hasMoreImages &&
-								currentIndex === totalImages - 1
-							}
-						>
-							Next
-						</Button>
 					</div>
+
+					{/* Author */}
+					<small className="mt-4 text-neutral-800 text-center">
+						Posted by:
+						<a
+							className="text-blue-900"
+							href={currentImage.permalink}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{" "}
+							{currentImage.author}
+						</a>
+					</small>
 				</div>
 			) : (
 				"No image available"
