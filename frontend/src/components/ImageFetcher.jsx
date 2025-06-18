@@ -94,11 +94,11 @@ const ImageFetcher = () => {
 					</button>
 				</div>
 			) : currentImage ? (
-				<div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto p-4 border border-yellow-500">
+				<div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto p-4">
 					{/* Image and Buttons Row */}
-					<div className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center border border-red-700">
+					<div className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center">
 						{/* Previous Button */}
-						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 md:static md:translate-y-0 md:top-auto md:left-auto">
+						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20">
 							<Button
 								onClick={prevImgHandler}
 								disabled={currentIndex === 0}
@@ -112,11 +112,11 @@ const ImageFetcher = () => {
 							src={currentImage.imageUrl}
 							alt={currentImage.title}
 							onLoad={onLoadHandler}
-							className={`max-h-[70vh] w-auto max-w-full object-contain transition-all duration-300 ease-in-out delay-75 ${
+							className={`h-[70vh] max-h-[70vh] w-auto max-w-full object-contain transition-all duration-300 ease-in-out delay-75 ${
 								imgLoading
 									? "opacity-0 scale-95 blur-md"
 									: "opacity-100 scale-100 blur-0"
-							} border border-black`}
+							}`}
 						/>
 
 						{/* Spinner overlay while loading */}
@@ -127,14 +127,13 @@ const ImageFetcher = () => {
 						)}
 
 						{/* Next Button */}
-						<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20 md:static md:translate-y-0 md:top-auto md:right-auto">
+						<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20">
 							<Button
 								onClick={nextImgHandler}
 								disabled={
 									!hasMoreImages &&
 									currentIndex === totalImages - 1
 								}
-								className="bg-white bg-opacity-80 sm:bg-opacity-100"
 							>
 								{">"}
 							</Button>
@@ -142,7 +141,7 @@ const ImageFetcher = () => {
 					</div>
 
 					{/* Author */}
-					<small className="mt-4 text-neutral-800 text-center">
+					<small className="text-neutral-800 text-center">
 						Posted by:
 						<a
 							className="text-blue-900"
