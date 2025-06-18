@@ -97,8 +97,6 @@ const ImageFetcher = () => {
 			) : currentImage ? (
 				<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
 					{/* Image and Buttons Row */}
-					{/* className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto" */}
-					{/* className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center" */}
 					<div className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden">
 						{/* Image */}
 						<img
@@ -158,7 +156,9 @@ const ImageFetcher = () => {
 					</small>
 				</div>
 			) : (
-				"No image available"
+				<div className="flex justify-center items-center text-lg">
+					<p>"No image available"</p>
+				</div>
 			)}
 		</>
 	);
