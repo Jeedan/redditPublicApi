@@ -74,6 +74,7 @@ const ImageFetcher = () => {
 	};
 	// testing to see if we are loading
 	//console.log("imgLoading state:", imgLoading);
+
 	return (
 		<>
 			{loading ? (
@@ -94,25 +95,17 @@ const ImageFetcher = () => {
 					</button>
 				</div>
 			) : currentImage ? (
-				<div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto p-4">
+				<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
 					{/* Image and Buttons Row */}
-					<div className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center">
-						{/* Previous Button */}
-						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20">
-							<Button
-								onClick={prevImgHandler}
-								disabled={currentIndex === 0}
-							>
-								{"<"}
-							</Button>
-						</div>
-
+					{/* className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto" */}
+					{/* className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center" */}
+					<div className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto border border-red-600 overflow-hidden">
 						{/* Image */}
 						<img
 							src={currentImage.imageUrl}
 							alt={currentImage.title}
 							onLoad={onLoadHandler}
-							className={`h-[70vh] max-h-[70vh] w-auto max-w-full object-contain transition-all duration-300 ease-in-out delay-75 ${
+							className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-in-out delay-75 ${
 								imgLoading
 									? "opacity-0 scale-95 blur-md"
 									: "opacity-100 scale-100 blur-0"
@@ -125,6 +118,16 @@ const ImageFetcher = () => {
 								<Spinner />
 							</div>
 						)}
+
+						{/* Previous Button */}
+						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20">
+							<Button
+								onClick={prevImgHandler}
+								disabled={currentIndex === 0}
+							>
+								{"<"}
+							</Button>
+						</div>
 
 						{/* Next Button */}
 						<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20">
