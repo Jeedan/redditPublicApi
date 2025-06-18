@@ -99,7 +99,7 @@ const ImageFetcher = () => {
 					{/* Image and Buttons Row */}
 					{/* className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto" */}
 					{/* className="relative w-full max-w-3xl h-auto max-h-[80vh] aspect-[3/4] flex items-center justify-center" */}
-					<div className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto border border-red-600 overflow-hidden">
+					<div className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden">
 						{/* Image */}
 						<img
 							src={currentImage.imageUrl}
