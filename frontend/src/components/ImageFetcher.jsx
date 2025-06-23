@@ -22,8 +22,12 @@ const ImageFetcher = ({ subreddit }) => {
 	} = UseRedditFetcher(subreddit);
 
 	const [imgLoading, setImgLoading] = useState(true);
+	// 2 states to track if we can advanced
+	// to the next page after loading new images
+	const [shouldAdvance, setShouldAdvance] = useState(false);
+	const prevTotalImages = useRef(totalImages);
 
-	const prevImgHandler = (e) => {
+	const prevImgHandler = () => {
 		if (loading) return;
 
 		// go back if we are not at the start
@@ -31,30 +35,43 @@ const ImageFetcher = ({ subreddit }) => {
 		else setCurrentIndex(0);
 	};
 
-	const nextImgHandler = (e) => {
-		//console.log(totalImages);
+	const nextImgHandler = () => {
 		if (loading) return;
 
-		// fetch next page if we are at the end
-		if (currentIndex === totalImages - 1 && hasMoreImages) {
-			fetchNextPage();
-			setCurrentIndex((curIdx) => curIdx + 1);
-		}
-
 		// go to next page
-		if (currentIndex < totalImages - 1)
+		if (currentIndex < totalImages - 1) {
 			setCurrentIndex((curIdx) => curIdx + 1);
+		} else if (hasMoreImages) {
+			fetchNextPage();
+			setShouldAdvance(true);
+		}
 	};
 
+	// check to make sure we finished loading images
+	// before advancing to the next page
+	useEffect(() => {
+		if (shouldAdvance && totalImages > prevTotalImages.current) {
+			setCurrentIndex((curIdx) => curIdx + 1);
+			setShouldAdvance(false);
+		}
+		prevTotalImages.current = totalImages;
+	}, [totalImages, shouldAdvance]);
+
+	// set up a useRef to cache images
+	// and prevent needles reloading
 	const loadedImages = useRef({});
 	useEffect(() => {
 		if (!currentImage) return;
 
-		if (loadedImages.current[currentImage.id]) {
+		const img = new Image();
+		img.src = currentImage.imageUrl;
+		// show when it has loaded
+		img.onload = () => {
+			loadedImages.current[currentImage.id] = true;
 			setImgLoading(false);
-		} else {
-			setImgLoading(true);
-		}
+		};
+		// set img state to loading
+		setImgLoading(true);
 	}, [currentImage]);
 
 	const onLoadHandler = () => {
@@ -68,97 +85,104 @@ const ImageFetcher = ({ subreddit }) => {
 		// 	setImgLoading(false);
 		// }, 1500);
 	};
+
 	// testing to see if we are loading
 	//console.log("imgLoading state:", imgLoading);
 
-	return (
-		<>
-			{loading ? (
-				<div className="flex justify-center items-center min-h-[600px]">
-					<Spinner />
-				</div>
-			) : error ? (
-				// maybe render a try again button here to refetch
-				<ErrorScreen error={error} />
-			) : currentImage ? (
-				<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
-					{/* Image and Buttons Row */}
-					<div
-						className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden"
-						aria-live="polite"
-						aria-busy={imgLoading}
-					>
-						{/* Image */}
-						<img
-							src={currentImage.imageUrl}
-							alt={currentImage.title || "Reddit image"}
-							onLoad={onLoadHandler}
-							className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-in-out delay-75 ${
-								imgLoading
-									? "hidden"
-									: "opacity-100 scale-100 blur-0"
-							}`}
-						/>
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center min-h-[600px]">
+				<Spinner />
+			</div>
+		);
+	}
 
-						{/* Skeleton overlay while loading */}
-						{imgLoading && (
-							<div
-								className="absolute inset-0 z-10 rounded-md
+	if (error) {
+		// maybe render a try again button here to refetch
+		return <ErrorScreen error={error} />;
+	}
+
+	if (currentImage) {
+		return (
+			<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
+				{/* Image and Buttons Row */}
+				<div
+					className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden"
+					aria-live="polite"
+					aria-busy={imgLoading}
+				>
+					{/* Image */}
+					<img
+						src={currentImage.imageUrl}
+						alt={currentImage.title || "Reddit image"}
+						className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-in-out delay-75 ${
+							imgLoading
+								? "hidden"
+								: "opacity-100 scale-100 blur-0"
+						}`}
+					/>
+
+					{/* Skeleton overlay while loading */}
+					{imgLoading && (
+						<div
+							className="absolute inset-0 z-10 rounded-md
 					bg-gray-300 animate-pulseImage"
-							></div>
-						)}
+						></div>
+					)}
 
-						{/* Previous Button */}
-						<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20">
-							<Button
-								onClick={prevImgHandler}
-								disabled={currentIndex === 0}
-								aria-label="Previous image"
-							>
-								{"<"}
-							</Button>
-						</div>
-
-						{/* Next Button */}
-						<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20">
-							<Button
-								onClick={nextImgHandler}
-								disabled={
-									!hasMoreImages &&
-									currentIndex === totalImages - 1
-								}
-								aria-label="Next image"
-							>
-								{">"}
-							</Button>
-						</div>
+					{/* Previous Button */}
+					<div className="absolute left-2 top-1/2 -translate-y-1/2 z-20">
+						<Button
+							onClick={prevImgHandler}
+							disabled={currentIndex === 0}
+							aria-label="Previous image"
+						>
+							{"<"}
+						</Button>
 					</div>
 
-					{/* Author */}
-					<small className="text-neutral-800 text-center">
-						Posted by:
-						<a
-							className="text-blue-900"
-							href={currentImage.permalink}
-							target="_blank"
-							rel="noopener noreferrer"
+					{/* Next Button */}
+					<div className="absolute right-2 top-1/2 -translate-y-1/2 z-20">
+						<Button
+							onClick={nextImgHandler}
+							disabled={
+								!hasMoreImages &&
+								currentIndex === totalImages - 1
+							}
+							aria-label="Next image"
 						>
-							{" "}
-							{currentImage.author}
-						</a>
-					</small>
+							{">"}
+						</Button>
+					</div>
 				</div>
-			) : (
-				<div className="flex justify-center items-center text-lg">
-					<h2 className="text-2xl font-semibold text-gray-600">
-						No images found
-					</h2>
-					<p className="text-sm text-muted-foreground">
-						Try searching another subreddit.
-					</p>
-				</div>
-			)}
-		</>
+
+				{/* Author */}
+				<small className="text-neutral-800 text-center">
+					Posted by:
+					<a
+						className="text-blue-900"
+						href={currentImage.permalink}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{" "}
+						{currentImage.author}
+					</a>
+				</small>
+			</div>
+		);
+	}
+
+	// return no images found if all else fails
+	return (
+		<div className="flex justify-center items-center text-lg">
+			<h2 className="text-2xl font-semibold text-gray-600">
+				No images found
+			</h2>
+			<p className="text-sm text-muted-foreground">
+				Try searching another subreddit.
+			</p>
+		</div>
 	);
 };
 
