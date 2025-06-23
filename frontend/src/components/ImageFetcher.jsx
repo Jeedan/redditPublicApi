@@ -3,7 +3,7 @@ import UseRedditFetcher from "../hooks/useRedditFetcher";
 import Spinner from "./Spinner";
 import Button from "./Button";
 
-const ImageFetcher = () => {
+const ImageFetcher = ({ subreddit }) => {
 	//  id: post.data.id,
 	// 	author: post.data.author,
 	// 	imageUrl: post.data.url,
@@ -18,16 +18,15 @@ const ImageFetcher = () => {
 		loading,
 		error,
 		fetchNextPage,
-		subreddit,
-		setSubreddit,
 		hasMoreImages,
-	} = UseRedditFetcher();
+	} = UseRedditFetcher(subreddit);
 
 	const [imgLoading, setImgLoading] = useState(true);
 
 	const prevImgHandler = (e) => {
 		if (loading) return;
 
+		// go back if we are not at the start
 		if (currentIndex > 0) setCurrentIndex((curIdx) => curIdx - 1);
 		else setCurrentIndex(0);
 	};
@@ -42,6 +41,7 @@ const ImageFetcher = () => {
 			setCurrentIndex((curIdx) => curIdx + 1);
 		}
 
+		// go to next page
 		if (currentIndex < totalImages - 1)
 			setCurrentIndex((curIdx) => curIdx + 1);
 	};

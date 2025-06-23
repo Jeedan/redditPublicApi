@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { getRedditJson } from "../services/redditApi";
 
-const UseRedditFetcher = () => {
-	const [subreddit, setSubreddit] = useState("airplaneears");
+const UseRedditFetcher = (subreddit) => {
+	// const [subreddit, setSubreddit] = useState("airplaneears");
 	const [images, setImages] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [loading, setLoading] = useState(false);
@@ -80,8 +80,8 @@ const UseRedditFetcher = () => {
 		loading,
 		error,
 		fetchNextPage,
-		subreddit,
-		setSubreddit,
+		// subreddit,
+		// setSubreddit,
 		hasMoreImages,
 	};
 };
