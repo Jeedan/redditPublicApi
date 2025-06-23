@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import UseRedditFetcher from "../hooks/useRedditFetcher";
 import Spinner from "./Spinner";
 import Button from "./Button";
+import ErrorScreen from "./ErrorScreen";
 
 const ImageFetcher = ({ subreddit }) => {
 	//  id: post.data.id,
@@ -14,7 +15,6 @@ const ImageFetcher = ({ subreddit }) => {
 		currentIndex,
 		setCurrentIndex,
 		totalImages,
-		refetch,
 		loading,
 		error,
 		fetchNextPage,
@@ -46,16 +46,6 @@ const ImageFetcher = ({ subreddit }) => {
 			setCurrentIndex((curIdx) => curIdx + 1);
 	};
 
-	const loadMoreHandler = (e) => {
-		console.log("more images: ", totalImages);
-		fetchNextPage();
-	};
-
-	const tryAgainHandler = (e) => {
-		console.log("refetching data...");
-		refetch();
-	};
-
 	const loadedImages = useRef({});
 	useEffect(() => {
 		if (!currentImage) return;
@@ -71,6 +61,12 @@ const ImageFetcher = ({ subreddit }) => {
 		if (!currentImage) return;
 		loadedImages.current[currentImage.id] = true;
 		setImgLoading(false);
+
+		// simulate loading
+		// setTimeout(() => {
+		// 	loadedImages.current[currentImage.id] = true;
+		// 	setImgLoading(false);
+		// }, 1500);
 	};
 	// testing to see if we are loading
 	//console.log("imgLoading state:", imgLoading);
@@ -83,38 +79,33 @@ const ImageFetcher = ({ subreddit }) => {
 				</div>
 			) : error ? (
 				// maybe render a try again button here to refetch
-				<div className="text-center p-4">
-					<p>Oops we couldn't access reddit! </p>
-					<p className="text-red-500">{error}</p>
-					<button
-						className="w-24 h-12 bg-blue-500 text-white rounded mt-2 disabled:opacity-50"
-						onClick={tryAgainHandler}
-						disabled={loading}
-					>
-						Try again
-					</button>
-				</div>
+				<ErrorScreen error={error} />
 			) : currentImage ? (
 				<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
 					{/* Image and Buttons Row */}
-					<div className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden">
+					<div
+						className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden"
+						aria-live="polite"
+						aria-busy={imgLoading}
+					>
 						{/* Image */}
 						<img
 							src={currentImage.imageUrl}
-							alt={currentImage.title}
+							alt={currentImage.title || "Reddit image"}
 							onLoad={onLoadHandler}
 							className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-in-out delay-75 ${
 								imgLoading
-									? "opacity-0 scale-95 blur-md"
+									? "hidden"
 									: "opacity-100 scale-100 blur-0"
 							}`}
 						/>
 
-						{/* Spinner overlay while loading */}
+						{/* Skeleton overlay while loading */}
 						{imgLoading && (
-							<div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-80 z-10">
-								<Spinner />
-							</div>
+							<div
+								className="absolute inset-0 z-10 rounded-md
+					bg-gray-300 animate-pulseImage"
+							></div>
 						)}
 
 						{/* Previous Button */}
@@ -122,6 +113,7 @@ const ImageFetcher = ({ subreddit }) => {
 							<Button
 								onClick={prevImgHandler}
 								disabled={currentIndex === 0}
+								aria-label="Previous image"
 							>
 								{"<"}
 							</Button>
@@ -135,6 +127,7 @@ const ImageFetcher = ({ subreddit }) => {
 									!hasMoreImages &&
 									currentIndex === totalImages - 1
 								}
+								aria-label="Next image"
 							>
 								{">"}
 							</Button>
@@ -157,7 +150,12 @@ const ImageFetcher = ({ subreddit }) => {
 				</div>
 			) : (
 				<div className="flex justify-center items-center text-lg">
-					<p>"No image available"</p>
+					<h2 className="text-2xl font-semibold text-gray-600">
+						No images found
+					</h2>
+					<p className="text-sm text-muted-foreground">
+						Try searching another subreddit.
+					</p>
 				</div>
 			)}
 		</>

@@ -1,63 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Header = ({ subreddit, setSubreddit }) => {
 	const [inputValue, setInputValue] = useState("");
+	const [windowWidth, setWindowWidth] = useState(
+		typeof window !== "undefined" ? window.innerWidth : 0
+	);
+
+	// Update window width for responsive placeholder
+	useEffect(() => {
+		function handleResize() {
+			setWindowWidth(window.innerWidth);
+		}
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
+	const placeholder =
+		windowWidth < 648 ? "Search subreddit" : "Search for any subreddit...";
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const trimmedInputValue = inputValue.trim();
-		console.log("inputValue: ", trimmedInputValue);
 		if (trimmedInputValue === subreddit) {
 			setInputValue("");
 			return;
 		}
-
 		if (trimmedInputValue !== "") {
-			setSubreddit(inputValue);
+			setSubreddit(trimmedInputValue);
 			setInputValue("");
 		}
 	};
 
 	return (
 		<nav className="border-b bg-neutral-100 backdrop-blur supports-[backdrop-filter]:bg-neutral-100/60 shadow-sm">
-			<div className="container flex h-14 md:h-16 items-center">
-				{/* the logo */}
-				<div className="flex items-center space-x-2">
-					{/* Camera icon from Shadcn ui */}
-					{/*<Camera className="h-6 w-6" /> */}
-
-					<p className="pl-4 font-extrabold text-lg md:text-3xl tracking-tight dark:text-white text-gray-900">
+			<div className=" flex h-14 md:h-16 items-center justify-between px-4">
+				{/* Left: Logo */}
+				<div className="flex items-center whitespace-nowrap">
+					<p className="font-extrabold text-lg md:text-3xl tracking-tight dark:text-white text-gray-900">
 						Fetch Reddit Images
 					</p>
 				</div>
 
-				{/* Centered Search */}
-				<div className="flex-1 flex justify-center px-8">
-					<div className="relative w-full max-w-md">
-						<form
-							onSubmit={handleSubmit}
-							className="relative w-full max-w-md"
+				{/* Center: Search bar */}
+				<div className="flex-grow max-w-md mx-4 min-w-52 sm:min-w-72">
+					<form className="relative w-full" onSubmit={handleSubmit}>
+						<input
+							type="search"
+							placeholder={placeholder}
+							className="pl-2 md:pl-4 h-8 w-full shadow-sm rounded focus:outline-none"
+							value={inputValue}
+							onChange={(e) => setInputValue(e.target.value)}
+						/>
+						<button
+							type="submit"
+							className="absolute right-1 top-1/2 -translate-y-1/2 text-sm bg-blue-500 text-white px-2 py-1 rounded"
 						>
-							{/* <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /> */}
-							<input
-								type="search"
-								placeholder="Search images..."
-								className="pl-2 md:pl-4 h-8 w-full shadow-sm rounded focus:outline-none"
-								value={inputValue}
-								onChange={(e) => setInputValue(e.target.value)}
-							/>
-							<button
-								type="submit"
-								className="absolute right-1 top-1/2 -translate-y-1/2 text-sm bg-blue-500 text-white px-2 py-1 rounded"
-							>
-								Search
-							</button>
-						</form>
-					</div>
+							Search
+						</button>
+					</form>
 				</div>
 
-				{/* Right side spacer to balance the logo */}
-				{/* <div className="w-[140px]" /> */}
+				{/* Right: Invisible clone of logo for balance */}
+				<div className="flex items-center invisible whitespace-nowrap border border-red-600">
+					<p className="font-extrabold text-lg md:text-3xl tracking-tight text-gray-900">
+						Fetch Reddit Images
+					</p>
+				</div>
 			</div>
 		</nav>
 	);

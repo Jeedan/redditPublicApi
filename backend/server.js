@@ -26,8 +26,10 @@ app.get("/api/reddit", async (req, res) => {
 
 		res.status(200).json(response.data);
 	} catch (err) {
-		console.error("Error fetching from Reddit data: ", err.message);
-		res.status(500).json({ error: "Failed to fetch Reddit data" });
+		res.status(err.response?.status || 500).json({
+			error:
+				err?.response?.data?.message || err.message || "Unknown error",
+		});
 	}
 });
 
