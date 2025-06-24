@@ -18,47 +18,62 @@ const getRedditJson = async (
 	afterToken = "",
 	limit = 25
 ) => {
-	// move this out to a utils file, maybe CONSTANTS
-	// we use corsByPass because of getting throttled by reddit
-	// move this to a express server later on to fetch from there
-	const apiURL = "/api/reddit/";
-	//"http://localhost:5000/api/reddit?subreddit=airplaneears"
-	// .json?after=${afterToken}&limit=${limit}
-	const url = `${apiURL}?subreddit=${subreddit}&after=${afterToken}&limit=${limit}`;
-	const response = await axios.get(url);
+	try {
+		// move this out to a utils file, maybe CONSTANTS
+		// we use corsByPass because of getting throttled by reddit
+		// move this to a express server later on to fetch from there
+		const apiURL = "/api/reddit/";
+		//"http://localhost:5000/api/reddit?subreddit=airplaneears"
+		// .json?after=${afterToken}&limit=${limit}
+		const url = `${apiURL}?subreddit=${subreddit}&after=${afterToken}&limit=${limit}`;
+		const response = await axios.get(url);
 
-	if (
-		!response.data ||
-		!response.data.data ||
-		!Array.isArray(response.data.data.children)
-	) {
-		throw new Error("Unexpected response structure from Reddit");
+		// check if our response is of type Array
+		if (
+			!response.data ||
+			!response.data.data ||
+			!Array.isArray(response.data.data.children)
+		) {
+			throw new Error("Unexpected response structure from Reddit");
+		}
+
+		console.log(response.data.data);
+		const after = response.data.data.after;
+		console.log("after: ", after);
+
+		const childrenData = response.data.data.children;
+		// only show posts containing images
+		const filterImages = childrenData.filter(
+			(post) => post.data.post_hint === "image"
+		);
+
+		// if we don't have images treat it as an empty array
+		if (filterImages.length === 0) {
+			throw new Error(`No Image posts found in r/${subreddit}`);
+		}
+
+		// expand on this data if we need more fields in the future
+		const redditData = filterImages.map((post) => ({
+			id: post.data.id,
+			author: post.data.author,
+			imageUrl: post.data.url,
+			title: post.data.title,
+			permalink: `https://www.reddit.com${post.data.permalink}`,
+		}));
+		return { images: redditData, afterToken: after };
+	} catch (err) {
+		// forbidden
+		if (err.response?.status === 403) throw new Error("403");
+		// not found
+		if (err.response?.status === 404) throw new Error("404");
+		// rate limit
+		if (err.response?.status === 429) throw new Error("429");
+
+		if (err.name === "TypeError") {
+			throw new Error("Network error");
+		}
+		throw new Error(err.message);
 	}
-
-	console.log(response.data.data);
-	const after = response.data.data.after;
-	console.log("after: ", after);
-
-	const childrenData = response.data.data.children;
-	// only show posts containing images
-	const filterImages = childrenData.filter(
-		(post) => post.data.post_hint === "image"
-	);
-
-	// if we don't have images treat it as an empty array
-	if (filterImages.length === 0) {
-		throw new Error(`No Image posts found in r/${subreddit}`);
-	}
-
-	// expand on this data if we need more fields in the future
-	const redditData = filterImages.map((post) => ({
-		id: post.data.id,
-		author: post.data.author,
-		imageUrl: post.data.url,
-		title: post.data.title,
-		permalink: `https://www.reddit.com${post.data.permalink}`,
-	}));
-	return { images: redditData, afterToken: after };
 };
 
 export { getRedditJson };

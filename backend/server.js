@@ -24,10 +24,11 @@ app.get("/api/reddit", async (req, res) => {
 			}
 		);
 
-		res.status(200).json(response.data);
+		res.status(response.status).json(response.data);
 	} catch (err) {
 		res.status(err.response?.status || 500).json({
-			error:
+			error: err?.response?.status,
+			message:
 				err?.response?.data?.message || err.message || "Unknown error",
 		});
 	}
