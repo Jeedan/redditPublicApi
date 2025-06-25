@@ -129,7 +129,7 @@ const ImageFetcher = ({ subreddit }) => {
 
 				{/* Image and Buttons Row */}
 				<div
-					className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden"
+					className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[650px] max-h-[70vh] mx-auto overflow-hidden"
 					aria-live="polite"
 					aria-busy={imgLoading}
 				>
@@ -176,6 +176,10 @@ const ImageFetcher = ({ subreddit }) => {
 							{">"}
 						</Button>
 					</div>
+				</div>
+				{/* Pagination or current image of total */}
+				<div className="mt-2 text-neutral-900 dark:text-neutral-400">
+					Post {currentIndex + 1} of {totalImages}
 				</div>
 			</div>
 		);
