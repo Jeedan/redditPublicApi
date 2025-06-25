@@ -37,10 +37,10 @@ const getRedditJson = async (
 			throw new Error("Unexpected response structure from Reddit");
 		}
 
-		console.log(response.data.data);
+		console.log("response.data json: ", response.data);
 		const after = response.data.data.after;
 		console.log("after: ", after);
-
+		//rich:video
 		const childrenData = response.data.data.children;
 		// only show posts containing images
 		const filterImages = childrenData.filter(

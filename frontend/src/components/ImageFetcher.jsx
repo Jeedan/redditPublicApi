@@ -104,7 +104,29 @@ const ImageFetcher = ({ subreddit }) => {
 
 	if (currentImage) {
 		return (
-			<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-16 md:mt-4 p-4">
+			<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-2 md:mt-2 p-4">
+				{/* Title  */}
+				<div className="flex justify-center  w-full space-y-2">
+					<p className="text-neutral-800 font-semibold text-lg md:text-2xl">
+						{currentImage.title}
+					</p>
+				</div>
+				{/* Author */}
+				<div className="w-full md:w-1/2 text-center text-nowrap">
+					<small className="text-neutral-800 ">
+						Posted by:
+						<a
+							className="text-blue-900"
+							href={currentImage.permalink}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{" "}
+							{currentImage.author}
+						</a>
+					</small>
+				</div>
+
 				{/* Image and Buttons Row */}
 				<div
 					className="relative flex items-center justify-center w-full max-w-3xl aspect-[3/4] min-h-[600px] sm:min-h-[600px] md:min-h-[700px] max-h-[70vh] md:max-h-[80vh] mx-auto overflow-hidden"
@@ -155,20 +177,6 @@ const ImageFetcher = ({ subreddit }) => {
 						</Button>
 					</div>
 				</div>
-
-				{/* Author */}
-				<small className="text-neutral-800 text-center">
-					Posted by:
-					<a
-						className="text-blue-900"
-						href={currentImage.permalink}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{" "}
-						{currentImage.author}
-					</a>
-				</small>
 			</div>
 		);
 	}

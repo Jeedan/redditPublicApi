@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 
 const Header = ({ subreddit, setSubreddit }) => {
 	const [inputValue, setInputValue] = useState("");
@@ -42,20 +43,20 @@ const Header = ({ subreddit, setSubreddit }) => {
 				</div>
 
 				{/* Center: Search bar */}
-				<div className="flex-grow max-w-md mx-4 min-w-52 sm:min-w-72">
+				<div className="max-w-md mx-4 min-w-52 sm:min-w-72">
 					<form className="relative w-full" onSubmit={handleSubmit}>
 						<input
 							type="search"
 							placeholder={placeholder}
-							className="pl-2 md:pl-4 h-8 w-full shadow-sm rounded focus:outline-none"
+							className="pl-2 md:pl-4 h-8 w-full shadow-sm rounded-md focus:outline-none"
 							value={inputValue}
 							onChange={(e) => setInputValue(e.target.value)}
 						/>
 						<button
 							type="submit"
-							className="absolute right-1 top-1/2 -translate-y-1/2 text-sm bg-blue-500 text-white px-2 py-1 rounded"
+							className="h-8 absolute right-0  top-1/2 -translate-y-1/2 text-sm bg-neutral-800 text-white dark:bg-neutral-400 dark:text-neutral-900 px-2 py-1 rounded-e-md"
 						>
-							Search
+							<Search className="flex justify-center items-center m-auto h-4 w-4" />
 						</button>
 					</form>
 				</div>
