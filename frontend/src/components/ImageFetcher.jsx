@@ -104,7 +104,7 @@ const ImageFetcher = ({ subreddit }) => {
 
 	if (currentImage) {
 		return (
-			<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-2 md:mt-2 p-4">
+			<div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto mt-2 md:mt-2 p-4 bg-neutral-100 rounded-md   drop-shadow-lg">
 				{/* Title  */}
 				<div className="flex justify-center  w-full space-y-2">
 					<p className="text-neutral-800 font-semibold text-lg md:text-2xl">

@@ -6,7 +6,7 @@ const UseRedditFetcher = (subreddit) => {
 	const [images, setImages] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const [error, setError] = useState(null);
 	const [refetchTrigger, setRefetchTrigger] = useState(0);
 
 	const [afterToken, setAfterToken] = useState("");
@@ -22,7 +22,7 @@ const UseRedditFetcher = (subreddit) => {
 		try {
 			setLoading(true);
 			// check if we have an after token
-			setError(""); // clear previous errors
+			setError(null); // clear previous errors
 			const { images: newImages, afterToken: newAfterToken } =
 				await getRedditJson(subreddit, after);
 
@@ -35,13 +35,9 @@ const UseRedditFetcher = (subreddit) => {
 
 			setAfterToken(newAfterToken);
 			setHasMoreImages(!!newAfterToken);
-		} catch (error) {
-			console.error("Reddit fetch error:", error);
-			setError(
-				typeof error === "string"
-					? error
-					: error?.message || "An error occured"
-			);
+		} catch (err) {
+			console.error("Reddit fetch error:", err);
+			setError(err);
 		} finally {
 			setLoading(false);
 		}
